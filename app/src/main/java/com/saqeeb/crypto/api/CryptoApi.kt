@@ -13,7 +13,7 @@ interface CryptoApi {
     suspend fun getGlobalData() : Response<GlobalDataModel>
 
     @GET("coins")
-    suspend fun getAllCryptoCoins() : Response<AllCoinsResponse>
+    suspend fun getAllCryptoCoins() : Response<List<CryptoCoin>>
 
     @GET("coins/{coinId}")
     suspend fun getCryptoCoin(@Path("coinId") coinId:String) : Response<CryptoCoin>
