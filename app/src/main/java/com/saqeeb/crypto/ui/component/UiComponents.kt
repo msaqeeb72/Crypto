@@ -11,8 +11,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -31,22 +34,35 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.saqeeb.crypto.R
 import com.saqeeb.crypto.model.CryptoCoin
+import com.saqeeb.crypto.model.GlobalDataModel
+import com.saqeeb.crypto.util.Utils
+import com.saqeeb.crypto.util.toTextFormat
 import java.util.Random
 class CoinProvider : PreviewParameterProvider<CryptoCoin> {
     override val values = listOf(CryptoCoin(
         "btc",true,true,"BitCoin",1,"BTC","coin"
     )).asSequence()
 }
-@Preview
 @Composable
 fun CoinListItem(@PreviewParameter(CoinProvider::class) coin: CryptoCoin){
-    Card {
-        Row (modifier = Modifier.height(80.dp)){
+    Card (
+        modifier = Modifier
+            .padding(6.dp)
+    ){
+        Row (
+            modifier = Modifier
+                .height(80.dp)
+        ){
             Box(
                 modifier = Modifier
                     .weight(0.2f)
             ) {
-                ItemHeaderByName(name = coin.symbol)
+                val colorState = remember {
+                    mutableStateOf(
+                        Utils.generateRandomColor()
+                    )
+                }
+                ItemHeaderByName(name = coin.symbol, color = colorState.value)
             }
             Box(
                 modifier = Modifier
@@ -112,23 +128,14 @@ fun CoinListItem(@PreviewParameter(CoinProvider::class) coin: CryptoCoin){
 
 
 @Composable
-fun ItemHeaderByName(name:String){
-    val colorState = remember {
-        val rnd = Random()
-        mutableStateOf(
-            android.graphics.Color.argb(
-                255,
-                rnd.nextInt(256),
-                rnd.nextInt(256),
-                rnd.nextInt(256))
-        )
-    }
+fun ItemHeaderByName(name:String,color: Color){
+
 
     Box(
         modifier = Modifier
             .size(80.dp)
             .padding(6.dp)
-            .background(Color(color = colorState.value), shape = CircleShape)
+            .background(color, shape = CircleShape)
             .padding(6.dp),
         contentAlignment = Alignment.Center
     ) {
@@ -139,4 +146,61 @@ fun ItemHeaderByName(name:String){
             maxLines = 1
         )
     }
+}
+
+@Composable
+fun GlobalDataHeader(data:GlobalDataModel){
+    Row {
+        GlobalDataHeaderItem(
+            title = "Market Cap",
+            value = data.market_cap_usd.toTextFormat()
+        )
+        GlobalDataHeaderItem(
+            title = "Volume",
+            value = data.volume_24h_usd.toTextFormat()
+        )
+        GlobalDataHeaderItem(
+            title = "BTC Dominance",
+            value = data.bitcoin_dominance_percentage.toString(),
+            symbol = "%"
+        )
+        GlobalDataHeaderItem(
+            title = "Crypto Currencies",
+            value = data.cryptocurrencies_number.toString(),
+            symbol = ""
+        )
+
+    }
+}
+
+@Composable
+fun GlobalDataHeaderItem(title:String, value:String,symbol:String="$"){
+
+    Card(modifier = Modifier
+        .padding(4.dp)
+        .height(70.dp)
+        .width(120.dp)
+    ) {
+        Column(modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.SpaceBetween,
+            horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+            Text(
+                text = title,
+                color = Color.White,
+                fontSize = 15.sp,
+                maxLines = 1
+            )
+            Divider()
+            Text(
+                text = "$value $symbol",
+                color = Color.White,
+                fontSize = 22.sp,
+                maxLines = 1,
+                fontWeight = FontWeight.SemiBold,
+                fontFamily = FontFamily.SansSerif,
+            )
+        }
+    }
+
 }

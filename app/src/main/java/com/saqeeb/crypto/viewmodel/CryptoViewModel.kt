@@ -21,6 +21,8 @@ class CryptoViewModel @Inject constructor(private val repository: CryptoReposito
 
     val globalData : StateFlow<GlobalDataModel?>
         get() = repository.globalData
+    val isLoading : StateFlow<Boolean>
+        get() = repository.isLoading
     init {
         viewModelScope.launch(Dispatchers.IO){
             repository.getGlobalData()
