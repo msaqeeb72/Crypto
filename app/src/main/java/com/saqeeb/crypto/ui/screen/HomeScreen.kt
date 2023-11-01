@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -16,12 +17,14 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -53,15 +56,33 @@ import com.saqeeb.crypto.viewmodel.CryptoViewModel
 @Composable
 fun HomeScreen(navController: NavHostController) {
     val viewModel:CryptoViewModel = hiltViewModel()
+
+    val loadingState = viewModel.isLoading.collectAsState()
     Scaffold(
         topBar = {
             TopAppBar(title = {
                 Text(text = "Crypto", color = White)
             },
-        colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = Black))
+            colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = Black),
+            actions = {
+                IconButton(onClick = { }) {
+                    Icon(Icons.Filled.Search, contentDescription = "Search Icon")
+                }
+            }
+            )
         }) {
         Box(modifier = Modifier.padding(it)){
-            HomeScreeBody()
+            Surface {
+                HomeScreeBody()
+                if (loadingState.value)
+                    Box (modifier = Modifier
+                        .fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ){
+                        CircularProgressIndicator()
+                    }
+
+            }
         }
     }
 }
@@ -71,10 +92,6 @@ fun HomeScreeBody(){
     val viewModel:CryptoViewModel = hiltViewModel()
     val coinsState = viewModel.allCoins.collectAsState()
     val globalDataState = viewModel.globalData.collectAsState()
-    val loadingState = viewModel.isLoading.collectAsState()
-    if(loadingState.value){
-        CircularProgressIndicator()
-    }
     Column{
         LazyColumn(
             content = {

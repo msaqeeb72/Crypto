@@ -2,6 +2,7 @@ package com.saqeeb.crypto.ui.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
@@ -150,7 +152,7 @@ fun ItemHeaderByName(name:String,color: Color){
 
 @Composable
 fun GlobalDataHeader(data:GlobalDataModel){
-    Row {
+    Row(Modifier.horizontalScroll(rememberScrollState())) {
         GlobalDataHeaderItem(
             title = "Market Cap",
             value = data.market_cap_usd.toTextFormat()
@@ -165,7 +167,7 @@ fun GlobalDataHeader(data:GlobalDataModel){
             symbol = "%"
         )
         GlobalDataHeaderItem(
-            title = "Crypto Currencies",
+            title = "Crypto Coins",
             value = data.cryptocurrencies_number.toString(),
             symbol = ""
         )
